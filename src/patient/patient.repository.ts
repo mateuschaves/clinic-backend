@@ -2,6 +2,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Patient } from './patient.entity';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { InternalServerErrorException } from '@nestjs/common';
+import { ListPatientDto } from './dto/list-patient.dto';
+import { ResponsePaginatedProps } from './intefaces/list-paginated.interface';
 
 @EntityRepository(Patient)
 export class PatientRepository extends Repository<Patient> {
@@ -21,5 +23,39 @@ export class PatientRepository extends Repository<Patient> {
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+
+  async listPatients(
+    listPatientDto: ListPatientDto,
+  ): Promise<ResponsePaginatedProps> {
+    const { page = 1, take = 10 } = listPatientDto;
+    const skip = (page - 1) * take;
+
+    const patients = await this.findAndCount({
+      order: { name: 'DESC' },
+      take: take,
+      skip: skip,
+    });
+
+    return this.paginateResponse(patients, page, take);
+  }
+
+  paginateResponse(
+    data: [Patient[], number],
+    page: number,
+    limit: number,
+  ): ResponsePaginatedProps {
+    const [result, total] = data;
+    const lastPage = Math.ceil(total / limit);
+    const nextPage = +page + 1 > lastPage ? null : +page + 1;
+    const prevPage = +page - 1 < 1 ? null : +page - 1;
+    return {
+      data: [...result],
+      count: total,
+      currentPage: Number(page),
+      nextPage: nextPage,
+      prevPage: prevPage,
+      lastPage: lastPage,
+    };
   }
 }
