@@ -1,4 +1,10 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Patient extends BaseEntity {
@@ -26,4 +32,7 @@ export class Patient extends BaseEntity {
 
   @Column()
   medication: string;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
