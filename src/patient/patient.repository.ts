@@ -4,6 +4,7 @@ import { CreatePatientDto } from './dto/create-patient.dto';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ListPatientDto } from './dto/list-patient.dto';
 import { ResponsePaginatedProps } from './intefaces/list-paginated.interface';
+import { RemovePatientDto } from './dto/remove-patient.dto';
 
 @EntityRepository(Patient)
 export class PatientRepository extends Repository<Patient> {
@@ -38,6 +39,14 @@ export class PatientRepository extends Repository<Patient> {
     });
 
     return this.paginateResponse(patients, page, take);
+  }
+
+  async removePatient(removePatientDto: RemovePatientDto): Promise<void> {
+    const { id } = removePatientDto;
+
+    await this.softDelete({
+      id,
+    });
   }
 
   paginateResponse(

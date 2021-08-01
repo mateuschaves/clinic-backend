@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Query,
   UsePipes,
@@ -12,6 +14,7 @@ import { Patient } from './patient.entity';
 import { PatientService } from './patient.service';
 import { ListPatientDto } from './dto/list-patient.dto';
 import { ResponsePaginatedProps } from './intefaces/list-paginated.interface';
+import { RemovePatientDto } from './dto/remove-patient.dto';
 
 @Controller('patient')
 export class PatientController {
@@ -29,5 +32,11 @@ export class PatientController {
     @Query() listPatientsDto: ListPatientDto,
   ): Promise<ResponsePaginatedProps> {
     return this.patientService.listPatients(listPatientsDto);
+  }
+
+  @Delete('/:id')
+  @UsePipes(ValidationPipe)
+  removePatient(@Param() removePatientDto: RemovePatientDto): Promise<void> {
+    return this.patientService.removePatient(removePatientDto);
   }
 }

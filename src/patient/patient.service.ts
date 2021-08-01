@@ -5,6 +5,7 @@ import { CreatePatientDto } from './dto/create-patient.dto';
 import { Patient } from './patient.entity';
 import { ListPatientDto } from './dto/list-patient.dto';
 import { ResponsePaginatedProps } from './intefaces/list-paginated.interface';
+import { RemovePatientDto } from './dto/remove-patient.dto';
 
 @Injectable()
 export class PatientService {
@@ -21,5 +22,9 @@ export class PatientService {
     listPatientDto: ListPatientDto,
   ): Promise<ResponsePaginatedProps> {
     return this.patientRepository.listPatients(listPatientDto);
+  }
+
+  removePatient(removePatientDto: RemovePatientDto): Promise<void> {
+    return this.patientRepository.removePatient(removePatientDto);
   }
 }
